@@ -222,7 +222,7 @@ void vTask2(void *pvParameters)
 
 /**
   * @brief System Clock Configuration
-  * @retval None
+  * @retvarl None
   */
 void SystemClock_Config(void)
 {
