@@ -51,6 +51,7 @@
 #include "stm32f4xx_hal.h"
 #include "cmsis_os.h"
 #include "queue.h"
+#include "task.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -70,6 +71,7 @@ static void MX_GPIO_Init(void);
 void StartDefaultTask(void const * argument);
 void vTask1(void *pvParameters);
 void vTask2(void *pvParameters);
+void vTask3(void *pvParameters);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -94,6 +96,9 @@ typedef struct queue_data_type_{
 queue_data_type data_type;
 
 xQueueHandle xqueue;
+
+//xTaskHandle xCreatedTask3;
+
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -142,8 +147,10 @@ int main(void)
 
   xTaskCreate( vTask2, ( signed char * ) "task 2", 128, NULL, 2, ( xTaskHandle * ) NULL);
 
+  xTaskCreate(vTask3, ( signed char * ) "task 3", 128, NULL, 2, ( xTaskHandle * ) NULL);
 
-  xqueue=xQueueCreate(10, sizeof(queue_data_type));
+
+  //xqueue=xQueueCreate(10, sizeof(queue_data_type));
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -182,14 +189,16 @@ void vTask1(void *pvParameters)
 
 	static portBASE_TYPE queue_state;
 
+	//xTaskCreate(vTask3, "task 3", 128, NULL, 2, &xCreatedTask3);
+
 	for (;;)
 	{
 		i++;
 		if (i>1000) i=0;
 
-		queue_data.el1=i;
+		//queue_data.el1=i;
 
-		queue_state=xQueueSendToBack(xqueue, &queue_data, 1000);
+		//queue_state=xQueueSendToBack(xqueue, &queue_data, 1000);
 	}
 
 }
@@ -204,19 +213,37 @@ void vTask2(void *pvParameters)
 
 	static portBASE_TYPE queue_state;
 
+	unsigned portBASE_TYPE uxPriority3;
+
 	for (;;)
 	{
 		i++;
 		if (i>1000) i=0;
 
-		queue_state=xQueueReceive(xqueue, &queue_data[iqd], 1000);
+		//queue_state=xQueueReceive(xqueue, &queue_data[iqd], 1000);
 
-		if (queue_state==pdPASS){
-			iqd=(iqd<9) ? iqd+1 : 0;
-		}
+		//if (queue_state==pdPASS){
+		//	iqd=(iqd<9) ? iqd+1 : 0;
+		//}
+
+		//uxPriority3=uxTaskPriorityGet(xCreatedTask3);
 	}
 
 
+
+
+}
+
+void vTask3(void * pvParameters)
+{
+	static uint32_t i3=0;
+
+	for (;;)
+	{
+		i3++;
+
+		if (i3>1000) i3=0;
+	}
 
 }
 
