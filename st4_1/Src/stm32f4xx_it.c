@@ -40,8 +40,10 @@
 //#include "task.h"
 
 /* USER CODE BEGIN 0 */
-//extern xQueueHandle xqueue34;
-//extern xTaskHandle xCreatedHandle3;
+extern xQueueHandle xqueue34;
+extern xTaskHandle xCreatedHandle3;
+
+extern uint32_t state_init_queue34;
 
 /* USER CODE END 0 */
 
@@ -157,9 +159,9 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 0 */
 	//static data_queue_type data;
 
-	//static uint32_t queue_data[10];
+	static uint32_t queue_data[10];
 
-	//static iqd=0;
+	static iqd=0;
 
 	//static uint32_t i=0;
 
@@ -170,9 +172,10 @@ void SysTick_Handler(void)
 
   //i=(i<1000)?++i:0;
 
-  //xQueueReceiveFromISR(xqueue34, &queue_data[iqd], 1000);
-
-  //iqd=(iqd<9)?++iqd:0;
+  if (state_init_queue34==1){
+	  xQueueReceiveFromISR(xqueue34, &queue_data[iqd], 1000);
+	  iqd=(iqd<9)?++iqd:0;
+  }
 
   //xQueueSendToBackFromISR(xqueue34, )
 

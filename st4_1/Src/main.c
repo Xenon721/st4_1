@@ -104,6 +104,8 @@ xTaskHandle xCreatedTask3;
 
 xTaskHandle xCreatedTask4;
 
+uint32_t state_init_queue34=0;
+
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -170,8 +172,13 @@ int main(void)
 
   /* Start scheduler */
   //osKernelStart();
+
+  state_init_queue34=1;
+
   vTaskStartScheduler();
   
+
+
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
@@ -268,7 +275,9 @@ void vTask4(void * pvParameters)
 			vTaskSuspend(xCreatedTask3);
 		}
 
-		//xQueueSendToBack(xqueue34, queue_data[iqd], 100);
+		queue_data[iqd]=i;
+
+		xQueueSendToBack(xqueue34, &queue_data[iqd], 100);
 
 		iqd=(iqd<9)?++iqd:0;
 	}
