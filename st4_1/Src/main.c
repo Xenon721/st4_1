@@ -72,6 +72,7 @@ void StartDefaultTask(void const * argument);
 void vTask1(void *pvParameters);
 void vTask2(void *pvParameters);
 void vTask3(void *pvParameters);
+void vTask4(void * pvParameters);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -97,7 +98,11 @@ queue_data_type data_type;
 
 xQueueHandle xqueue;
 
-//xTaskHandle xCreatedTask3;
+xQueueHandle xqueue34;
+
+xTaskHandle xCreatedTask3;
+
+xTaskHandle xCreatedTask4;
 
 int main(void)
 {
@@ -147,10 +152,12 @@ int main(void)
 
   xTaskCreate( vTask2, ( signed char * ) "task 2", 128, NULL, 2, ( xTaskHandle * ) NULL);
 
-  xTaskCreate(vTask3, ( signed char * ) "task 3", 128, NULL, 2, ( xTaskHandle * ) NULL);
+  //xTaskCreate(vTask3, ( signed char * ) "task 3", 128, NULL, 2, ( xTaskHandle * ) NULL);
 
 
-  //xqueue=xQueueCreate(10, sizeof(queue_data_type));
+  xqueue=xQueueCreate(10, sizeof(queue_data_type));
+
+  xqueue34=xQueueCreate(10, sizeof(uint32_t));
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -189,16 +196,18 @@ void vTask1(void *pvParameters)
 
 	static portBASE_TYPE queue_state;
 
-	//xTaskCreate(vTask3, "task 3", 128, NULL, 2, &xCreatedTask3);
+	xTaskCreate(vTask3, "task 3", 128, NULL, 2, &xCreatedTask3);
+
+	xTaskCreate(vTask4, "task 4", 128, NULL, 2, &xCreatedTask4);
 
 	for (;;)
 	{
 		i++;
 		if (i>1000) i=0;
 
-		//queue_data.el1=i;
+		queue_data.el1=i;
 
-		//queue_state=xQueueSendToBack(xqueue, &queue_data, 1000);
+		queue_state=xQueueSendToBack(xqueue, &queue_data, 1000);
 	}
 
 }
@@ -220,18 +229,14 @@ void vTask2(void *pvParameters)
 		i++;
 		if (i>1000) i=0;
 
-		//queue_state=xQueueReceive(xqueue, &queue_data[iqd], 1000);
+		queue_state=xQueueReceive(xqueue, &queue_data[iqd], 1000);
 
-		//if (queue_state==pdPASS){
-		//	iqd=(iqd<9) ? iqd+1 : 0;
-		//}
+		if (queue_state==pdPASS){
+			iqd=(iqd<9) ? iqd+1 : 0;
+		}
 
-		//uxPriority3=uxTaskPriorityGet(xCreatedTask3);
+		uxPriority3=uxTaskPriorityGet(xCreatedTask3);
 	}
-
-
-
-
 }
 
 void vTask3(void * pvParameters)
@@ -245,6 +250,30 @@ void vTask3(void * pvParameters)
 		if (i3>1000) i3=0;
 	}
 
+}
+
+void vTask4(void * pvParameters)
+{
+	static uint32_t i=0;
+
+	static uint32_t queue_data[10];
+
+	static uint32_t iqd=0;
+
+	for (;;)
+	{
+		i=(i<1000)?++i:0;
+
+		if (i==0){
+			vTaskSuspend(xCreatedTask3);
+		}
+
+		//xQueueSendToBack(xqueue34, queue_data[iqd], 100);
+
+		iqd=(iqd<9)?++iqd:0;
+	}
+
+	vTaskDelay(10/portTICK_RATE_MS);
 }
 
 /**

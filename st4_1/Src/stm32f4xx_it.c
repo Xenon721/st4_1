@@ -36,7 +36,12 @@
 #include "stm32f4xx_it.h"
 #include "cmsis_os.h"
 
+//#include "queue.h"
+//#include "task.h"
+
 /* USER CODE BEGIN 0 */
+//extern xQueueHandle xqueue34;
+//extern xTaskHandle xCreatedHandle3;
 
 /* USER CODE END 0 */
 
@@ -150,11 +155,26 @@ void DebugMon_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
+	//static data_queue_type data;
+
+	//static uint32_t queue_data[10];
+
+	//static iqd=0;
+
+	//static uint32_t i=0;
 
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   osSystickHandler();
   /* USER CODE BEGIN SysTick_IRQn 1 */
+
+  //i=(i<1000)?++i:0;
+
+  //xQueueReceiveFromISR(xqueue34, &queue_data[iqd], 1000);
+
+  //iqd=(iqd<9)?++iqd:0;
+
+  //xQueueSendToBackFromISR(xqueue34, )
 
   /* USER CODE END SysTick_IRQn 1 */
 }
