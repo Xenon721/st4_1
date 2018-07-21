@@ -280,9 +280,11 @@ void vTask4(void * pvParameters)
 		xQueueSendToBack(xqueue34, &queue_data[iqd], 100);
 
 		iqd=(iqd<9)?++iqd:0;
+
+		vTaskDelay(10/portTICK_RATE_MS);
 	}
 
-	vTaskDelay(10/portTICK_RATE_MS);
+
 }
 
 /**
