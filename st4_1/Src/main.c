@@ -155,7 +155,7 @@ int main(void)
   xTaskCreate( vTask2, ( signed char * ) "task 2", 128, NULL, 2, ( xTaskHandle * ) NULL);
 
 
-  //chang 1
+  //chang 2
 
   xqueue=xQueueCreate(10, sizeof(queue_data_type));
 
