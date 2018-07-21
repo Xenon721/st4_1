@@ -1,2 +1,2 @@
 # st4_1
-test: git pull
+test: git pull 2
